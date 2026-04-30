@@ -20,10 +20,10 @@ async function main() {
 
   const users = await Promise.all([
     prisma.user.upsert({
-      where: { email: "owner@careerops.app" },
+      where: { email: "owner@hirearchy.app" },
       update: { passwordHash: ownerPasswordHash, planTier: PlanTier.COACH },
       create: {
-        email: "owner@careerops.app",
+        email: "owner@hirearchy.app",
         name: "Workspace Owner",
         passwordHash: ownerPasswordHash,
         timezone: "Australia/Sydney",
@@ -31,10 +31,10 @@ async function main() {
       },
     }),
     prisma.user.upsert({
-      where: { email: "admin@careerops.app" },
+      where: { email: "admin@hirearchy.app" },
       update: { passwordHash: adminPasswordHash, planTier: PlanTier.PRO },
       create: {
-        email: "admin@careerops.app",
+        email: "admin@hirearchy.app",
         name: "Workspace Admin",
         passwordHash: adminPasswordHash,
         timezone: "Australia/Sydney",
@@ -42,10 +42,10 @@ async function main() {
       },
     }),
     prisma.user.upsert({
-      where: { email: "pro@careerops.app" },
+      where: { email: "pro@hirearchy.app" },
       update: { passwordHash: proPasswordHash, planTier: PlanTier.PRO },
       create: {
-        email: "pro@careerops.app",
+        email: "pro@hirearchy.app",
         name: "Pro User",
         passwordHash: proPasswordHash,
         timezone: "Australia/Sydney",
@@ -53,10 +53,10 @@ async function main() {
       },
     }),
     prisma.user.upsert({
-      where: { email: "free@careerops.app" },
+      where: { email: "free@hirearchy.app" },
       update: { passwordHash: freePasswordHash, planTier: PlanTier.FREE },
       create: {
-        email: "free@careerops.app",
+        email: "free@hirearchy.app",
         name: "Free User",
         passwordHash: freePasswordHash,
         timezone: "Australia/Sydney",
@@ -116,10 +116,10 @@ async function main() {
   );
 
   console.log("Launch seed complete.");
-  console.log("owner@careerops.app / Owner123!");
-  console.log("admin@careerops.app / Admin123!");
-  console.log("pro@careerops.app / ProUser123!");
-  console.log("free@careerops.app / FreeUser123!");
+  console.log("owner@hirearchy.app / Owner123!");
+  console.log("admin@hirearchy.app / Admin123!");
+  console.log("pro@hirearchy.app / ProUser123!");
+  console.log("free@hirearchy.app / FreeUser123!");
 }
 
 main()

@@ -13,7 +13,6 @@ export default function AdminUsersPage() {
   useEffect(() => {
     const auth = getFirebaseAuth();
     if (!auth) {
-      setLoading(false);
       return;
     }
     const unsub = onAuthStateChanged(auth, (nextUser) => {

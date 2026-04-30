@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030712;
+  --foreground: #f8fafc;
+  --accent: #14b8a6;
 }
 
 @theme inline {
@@ -14,13 +15,21 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #020617;
+    --foreground: #f8fafc;
   }
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(circle at top, #0b1120 0%, var(--background) 45%);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.cursor-target {
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cursor-target:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent);
 }

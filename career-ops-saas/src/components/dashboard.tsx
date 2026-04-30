@@ -194,11 +194,11 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
   return (
     <div className="space-y-6 text-zinc-100">
       <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
-          <TabsTrigger value="evaluate">Evaluate</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+        <TabsList className="border border-zinc-800 bg-zinc-900/80 p-1">
+          <TabsTrigger className="cursor-target data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-200" value="overview">Overview</TabsTrigger>
+          <TabsTrigger className="cursor-target data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-200" value="pipeline">Pipeline</TabsTrigger>
+          <TabsTrigger className="cursor-target data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-200" value="evaluate">Evaluate</TabsTrigger>
+          <TabsTrigger className="cursor-target data-[state=active]:bg-teal-500/20 data-[state=active]:text-teal-200" value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -209,15 +209,15 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
               { label: "Portal Results", value: String(scanResults.length) },
               { label: "Plan", value: planTier },
             ].map((metric) => (
-              <Card key={metric.label}>
+              <Card key={metric.label} className="cursor-target border-zinc-800 bg-zinc-900/80">
                 <CardHeader>
-                  <CardDescription>{metric.label}</CardDescription>
-                  <CardTitle className="text-2xl">{metric.value}</CardTitle>
+                  <CardDescription className="text-zinc-400">{metric.label}</CardDescription>
+                  <CardTitle className="text-2xl text-white">{metric.value}</CardTitle>
                 </CardHeader>
               </Card>
             ))}
           </div>
-            <Card className="mt-4">
+            <Card className="mt-4 border-zinc-800 bg-zinc-900/80">
             <CardHeader>
               <CardTitle>First-run onboarding</CardTitle>
               <CardDescription>Follow this sequence for highest conversion.</CardDescription>
@@ -233,8 +233,8 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
         </TabsContent>
 
         <TabsContent value="evaluate">
-          <p className="mb-3 rounded-md border border-zinc-800 bg-zinc-900 p-3 text-sm text-zinc-300">{status}</p>
-          <Card>
+          <p className="mb-3 rounded-md border border-teal-500/30 bg-teal-500/10 p-3 text-sm text-teal-100">{status}</p>
+          <Card className="border-zinc-800 bg-zinc-900/80">
             <CardHeader>
               <CardTitle>Start New Search</CardTitle>
               <CardDescription>Run an agentic evaluation and get next actions.</CardDescription>
@@ -247,21 +247,21 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
               <Input value={intake.url} onChange={(event) => setIntake((previous) => ({ ...previous, url: event.target.value }))} placeholder="Job URL (optional)" />
               <Textarea value={intake.jdText} onChange={(event) => setIntake((previous) => ({ ...previous, jdText: event.target.value }))} placeholder="Paste JD text here" rows={8} />
               <div className="flex flex-wrap items-center gap-2">
-                <label className="cursor-pointer rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-100">
+                <label className="cursor-target cursor-pointer rounded-md border border-teal-400/40 px-3 py-2 text-sm text-teal-100 hover:bg-teal-500/10">
                   Upload JD file
                   <input type="file" accept=".txt,.md" onChange={onFileUpload} className="hidden" />
                 </label>
-                <Button type="button" onClick={createEvaluation} disabled={!canSubmitIntake || loadingAction === "intake"}>
+                <Button className="cursor-target bg-teal-500 text-zinc-950 hover:bg-teal-400" type="button" onClick={createEvaluation} disabled={!canSubmitIntake || loadingAction === "intake"}>
                   {loadingAction === "intake" ? "Creating..." : "Create Search + Evaluation"}
                 </Button>
-                <Button type="button" variant="outline" onClick={runStandaloneEvaluation} disabled={loadingAction === "evaluate"}>
+                <Button className="cursor-target border-teal-500/40 text-teal-200 hover:bg-teal-500/10" type="button" variant="outline" onClick={runStandaloneEvaluation} disabled={loadingAction === "evaluate"}>
                   {loadingAction === "evaluate" ? "Evaluating..." : "Quick Evaluate JD"}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="mt-4">
+          <Card className="mt-4 border-zinc-800 bg-zinc-900/80">
             <CardHeader>
               <CardTitle>Latest Evaluation Output</CardTitle>
               <CardDescription>Structured output from the AI agent pipeline.</CardDescription>
@@ -286,8 +286,8 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
         </TabsContent>
 
         <TabsContent value="pipeline">
-          <p className="mb-3 rounded-md border border-zinc-800 bg-zinc-900 p-3 text-sm text-zinc-300">{status}</p>
-          <Card>
+          <p className="mb-3 rounded-md border border-teal-500/30 bg-teal-500/10 p-3 text-sm text-teal-100">{status}</p>
+          <Card className="border-zinc-800 bg-zinc-900/80">
             <CardHeader>
               <CardTitle>Portal scanner</CardTitle>
               <CardDescription>Discover and shortlist new roles.</CardDescription>
@@ -295,7 +295,7 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
             <CardContent className="space-y-3">
               <div className="flex gap-2">
                 <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search query" />
-                <Button type="button" onClick={runScan} disabled={loadingAction === "scan"}>
+                <Button className="cursor-target bg-teal-500 text-zinc-950 hover:bg-teal-400" type="button" onClick={runScan} disabled={loadingAction === "scan"}>
                   {loadingAction === "scan" ? "Scanning..." : "Scan"}
                 </Button>
               </div>
@@ -304,10 +304,10 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
                   <p className="text-sm text-zinc-400">No scan results yet.</p>
                 ) : (
                   scanResults.map((job) => (
-                    <div key={job.url} className="rounded-md border border-zinc-800 bg-zinc-900/70 p-3 text-sm">
+                    <div key={job.url} className="cursor-target rounded-md border border-zinc-800 bg-zinc-950/70 p-3 text-sm">
                       <p className="font-medium text-zinc-100">{job.company} - {job.role}</p>
                       <p className="text-zinc-400">{job.location}</p>
-                      <a className="text-blue-400 underline" href={job.url} target="_blank" rel="noreferrer">Open posting</a>
+                      <a className="cursor-target text-teal-300 underline" href={job.url} target="_blank" rel="noreferrer">Open posting</a>
                     </div>
                   ))
                 )}
@@ -315,7 +315,7 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
             </CardContent>
           </Card>
 
-          <Card className="mt-4">
+          <Card className="mt-4 border-zinc-800 bg-zinc-900/80">
             <CardHeader>
               <CardTitle>Application tracker</CardTitle>
               <CardDescription>Keep opportunity states accurate.</CardDescription>
@@ -325,12 +325,12 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
                 <p className="text-sm text-zinc-400">Create an evaluation to add your first tracked application.</p>
               ) : (
                 applications.map((item) => (
-                  <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-zinc-800 bg-zinc-900/70 p-2">
+                  <div key={item.id} className="cursor-target flex flex-wrap items-center justify-between gap-2 rounded-lg border border-zinc-800 bg-zinc-950/70 p-2">
                     <p className="text-sm text-zinc-200"><span className="font-medium">{item.company}</span> - {item.role} ({item.score}/5)</p>
                     <div className="flex items-center gap-2">
                       <Badge variant={item.status === "Interview" ? "success" : "secondary"}>{item.status}</Badge>
-                      <Button type="button" size="sm" variant="outline" onClick={() => markApplied(item.id)}>Mark Applied</Button>
-                      <Button type="button" size="sm" variant="outline" onClick={() => markInterview(item.id)}>Mark Interview</Button>
+                      <Button className="cursor-target border-teal-500/40 text-teal-200 hover:bg-teal-500/10" type="button" size="sm" variant="outline" onClick={() => markApplied(item.id)}>Mark Applied</Button>
+                      <Button className="cursor-target border-teal-500/40 text-teal-200 hover:bg-teal-500/10" type="button" size="sm" variant="outline" onClick={() => markInterview(item.id)}>Mark Interview</Button>
                     </div>
                   </div>
                 ))
@@ -341,7 +341,7 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
 
         <TabsContent value="settings">
           <div className="grid gap-4 md:grid-cols-2">
-            <Card>
+            <Card className="border-zinc-800 bg-zinc-900/80">
               <CardHeader>
                 <CardTitle>Account and plan</CardTitle>
                 <CardDescription>Manage role and billing.</CardDescription>
@@ -349,15 +349,15 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
               <CardContent className="space-y-2">
                 <p className="text-sm">Role: {userRole}</p>
                 <p className="text-sm">Current plan: {planTier}</p>
-                <Button type="button" onClick={upgradePlan} disabled={loadingAction === "upgrade" || isProUser}>
+                <Button className="cursor-target bg-teal-500 text-zinc-950 hover:bg-teal-400" type="button" onClick={upgradePlan} disabled={loadingAction === "upgrade" || isProUser}>
                   {isProUser ? "Pro Active" : loadingAction === "upgrade" ? "Opening..." : "Upgrade to Pro"}
                 </Button>
-                <Button type="button" variant="outline" onClick={signOutNow}>
+                <Button className="cursor-target border-teal-500/40 text-teal-200 hover:bg-teal-500/10" type="button" variant="outline" onClick={signOutNow}>
                   Logout
                 </Button>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-zinc-800 bg-zinc-900/80">
               <CardHeader>
                 <CardTitle>System status</CardTitle>
                 <CardDescription>Latest workflow result.</CardDescription>

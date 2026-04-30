@@ -36,7 +36,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-6 py-10">
       <form onSubmit={onSubmit} className="w-full max-w-md space-y-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Sign in to Career-Ops SaaS</h1>
+          <h1 className="text-2xl font-semibold text-zinc-900">Sign in to HIrearchy</h1>
           <p className="mt-1 text-sm text-zinc-600">Use your email and password to access your dashboard.</p>
         </div>
 

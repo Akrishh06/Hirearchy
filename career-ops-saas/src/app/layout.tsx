@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Career-Ops SaaS",
+  title: "HIrearchy",
   description: "Interactive job search operating system dashboard",
 };
 

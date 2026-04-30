@@ -1,4 +1,4 @@
-# Career-Ops SaaS Domain Model
+# HIrearchy Domain Model
 
 ## Purpose
 This model migrates markdown-centric workflow into relational, auditable entities suitable for multi-tenant SaaS.
@@ -17,7 +17,7 @@ This model migrates markdown-centric workflow into relational, auditable entitie
 - `ExperimentEvent`: product analytics for launch and onboarding experiments.
 
 ## Why this shape
-- Preserves Career-Ops flow: ingest -> evaluate -> tailor CV -> track -> follow up.
+- Preserves HIrearchy flow: ingest -> evaluate -> tailor CV -> track -> follow up.
 - Supports individual users today, team workspaces later (add `workspaceId` without schema rewrite).
 - Enables VC-ready instrumentation from day one through `PromptRun`, `UsageEvent`, and `ExperimentEvent`.
 

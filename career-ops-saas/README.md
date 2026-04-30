@@ -1,6 +1,6 @@
-# Career-Ops SaaS
+# HIrearchy
 
-Launch-ready Career-Ops SaaS with Firebase auth, agentic evaluation, and polished dashboard UX.
+Launch-ready HIrearchy with Firebase auth, agentic evaluation, and polished dashboard UX.
 
 ## What is included
 - Firebase email/password auth:
