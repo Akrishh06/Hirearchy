@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  COACH
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum ApplicationStatus {
+  EVALUATED
+  APPLIED
+  RESPONDED
+  INTERVIEW
+  OFFER
+  REJECTED
+  DISCARDED
+  SKIP
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String            @unique
+  name             String
+  passwordHash     String
+  timezone         String            @default("UTC")
+  planTier         PlanTier          @default(FREE)
+  stripeCustomerId String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  profile          CandidateProfile?
+  jobs             JobPosting[]
+  applications     Application[]
+  evaluations      EvaluationReport[]
+  resumeVersions   ResumeVersion[]
+  outreachDrafts   OutreachDraft[]
+  followUps        FollowUpTask[]
+  usageEvents      UsageEvent[]
+  usageLedgers     UsageLedger[]
+  experiments      ExperimentEvent[]
+  promptRuns       PromptRun[]
+  memberships      Membership[]
+  usageRollups     DailyUsageRollup[]
+  sessions         SessionToken[]
+}
+
+model SessionToken {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model Workspace {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  name         String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  usageLedgers UsageLedger[]
+  usageRollups DailyUsageRollup[]
+}
+
+model Membership {
+  id          String        @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+model CandidateProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  location         String
+  targetRoles      String[]
+  salaryMin        Int?
+  salaryMax        Int?
+  superpower       String?
+  dealBreakers     String[]
+  proofPoints      Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model JobPosting {
+  id             String             @id @default(cuid())
+  userId         String
+  source         String
+  sourceJobId    String?
+  url            String?
+  company        String
+  role           String
+  location       String?
+  compensation   String?
+  jdText         String
+  legitimacyTier String             @default("unconfirmed")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluations    EvaluationReport[]
+  applications   Application[]
+}
+
+model EvaluationReport {
+  id               String    @id @default(cuid())
+  userId           String
+  jobPostingId     String
+  scoreOverall     Float
+  scoreMatch       Float
+  scoreGrowth      Float
+  scoreComp        Float
+  scoreRisk        Float
+  scoreNarrative   Float
+  confidence       Float
+  recommendation   String
+  summary          String
+  gapAnalysis      Json
+  interviewSignals Json
+  createdAt        DateTime  @default(now())
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting       JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  userId          String
+  jobPostingId    String
+  status          ApplicationStatus @default(EVALUATED)
+  note            String?
+  scoreSnapshot   Float
+  reportUrl       String?
+  resumeVersionId String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting      JobPosting        @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  resumeVersion   ResumeVersion?    @relation(fields: [resumeVersionId], references: [id])
+}
+
+model ResumeVersion {
+  id            String        @id @default(cuid())
+  userId        String
+  title         String
+  markdown      String
+  pdfUrl        String?
+  tailoringNote String?
+  createdAt     DateTime      @default(now())
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications  Application[]
+}
+
+model OutreachDraft {
+  id         String   @id @default(cuid())
+  userId     String
+  channel    String
+  targetName String
+  draft      String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FollowUpTask {
+  id            String   @id @default(cuid())
+  userId        String
+  applicationId String?
+  dueAt         DateTime
+  status        String   @default("pending")
+  draftMessage  String?
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PromptRun {
+  id            String   @id @default(cuid())
+  userId        String
+  mode          String
+  model         String
+  promptVersion String
+  latencyMs     Int
+  inputTokens   Int
+  outputTokens  Int
+  costUsd       Float
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsageEvent {
+  id         String   @id @default(cuid())
+  userId     String
+  feature    String
+  quantity   Int      @default(1)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsageLedger {
+  id           String    @id @default(cuid())
+  workspaceId  String
+  userId       String
+  feature      String
+  quantity     Int       @default(1)
+  windowStart  DateTime
+  windowEnd    DateTime
+  metadata     Json?
+  createdAt    DateTime  @default(now())
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, userId, feature])
+}
+
+model DailyUsageRollup {
+  id              String    @id @default(cuid())
+  workspaceId     String
+  userId          String
+  day             DateTime
+  evaluations     Int       @default(0)
+  applications    Int       @default(0)
+  scans           Int       @default(0)
+  interviews      Int       @default(0)
+  offers          Int       @default(0)
+  tokenUsage      Int       @default(0)
+  estimatedCost   Float     @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId, day])
+  @@index([workspaceId, day])
+  @@index([userId, day])
+}
+
+model ExperimentEvent {
+  id         String   @id @default(cuid())
+  userId     String
+  experiment String
+  variant    String
+  event      String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
