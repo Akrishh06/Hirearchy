@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,22 +19,14 @@ export default function LoginPage() {
     setSubmitting(true);
     setError("");
     try {
-      const response = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const payload = (await response.json()) as { error?: { message?: string } };
-      if (!response.ok) {
-        setError(payload?.error?.message ?? "Signin failed");
-        return;
-      }
+      const auth = getFirebaseAuth();
+      if (!auth) throw new Error("Firebase is unavailable");
+      await signInWithEmailAndPassword(auth, email.trim(), password);
 
       router.push("/");
       router.refresh();
     } catch {
-      setError("Signin failed due to a network/server error.");
+      setError("Signin failed. Check your Firebase credentials and try again.");
     } finally {
       setSubmitting(false);
     }

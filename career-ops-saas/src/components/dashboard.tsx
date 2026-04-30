@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useMemo, useState } from "react";
+import { signOut } from "firebase/auth";
 
 import type { EvaluationResult, JobCandidate } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 type IntakeState = {
   company: string;
@@ -163,7 +165,8 @@ export function Dashboard({ planTier, userRole = "MEMBER" }: DashboardProps) {
   }
 
   async function signOutNow() {
-    await fetch("/api/auth/signout", { method: "POST" });
+    const auth = getFirebaseAuth();
+    if (auth) await signOut(auth);
     window.location.href = "/login";
   }
 

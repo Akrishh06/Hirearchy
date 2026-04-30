@@ -1,15 +1,13 @@
 # Career-Ops SaaS
 
-Launch-ready Career-Ops SaaS with minimal cookie auth, agentic evaluation, and polished dashboard UX.
+Launch-ready Career-Ops SaaS with Firebase auth, agentic evaluation, and polished dashboard UX.
 
 ## What is included
-- Minimal auth with secure httpOnly cookie sessions:
+- Firebase email/password auth:
   - `/login`
   - `/signup`
-  - `/api/auth/signin`
-  - `/api/auth/signout`
-  - `/api/auth/me`
-  - `src/proxy.ts`
+  - client session gate in `src/app/page.tsx`
+  - Firebase config in `src/lib/firebase.ts`
 - Agentic job evaluation with OpenAI primary path and fallback
 - Hardened API envelope format (`success`, `data`, `error`, `traceId`)
 - Rate-limited API endpoints for intake/evaluation/scan/billing
@@ -31,16 +29,19 @@ Launch-ready Career-Ops SaaS with minimal cookie auth, agentic evaluation, and p
 5. Start app:
    - `npm run dev`
 
-## Required env vars (Vercel/Postgres ready)
+## Required env vars (Firebase + Vercel/Postgres)
 - `DATABASE_URL` (Vercel Postgres connection string)
-- `AUTH_SECRET` (long random secret for session hashing)
-- `OWNER_EMAIL` (only this email can view `/users`)
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `NEXT_PUBLIC_OWNER_EMAIL` (owner gate for `/users` message)
 
-## Seeded launch users
-- `owner@careerops.app / Owner123!`
-- `admin@careerops.app / Admin123!`
-- `pro@careerops.app / ProUser123!`
-- `free@careerops.app / FreeUser123!`
+## Firebase users
+- Create users from `/signup`
+- Or manage users from Firebase Console → Authentication
 
 ## Quality checks
 - `npm run lint`

@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -21,28 +23,15 @@ export default function SignupPage() {
     setLoading(true);
     setStatus("");
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const raw = await response.text();
-      let payload: { error?: { message?: string } } | null = null;
-      try {
-        payload = raw ? (JSON.parse(raw) as { error?: { message?: string } }) : null;
-      } catch {
-        payload = null;
-      }
-
-      if (!response.ok) {
-        setStatus(payload?.error?.message ?? `Signup failed (${response.status})`);
-        return;
-      }
+      const auth = getFirebaseAuth();
+      if (!auth) throw new Error("Firebase is unavailable");
+      const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      await updateProfile(credential.user, { displayName: name.trim() });
 
       setStatus("Account created. Redirecting to sign in...");
       router.push("/login");
     } catch {
-      setStatus("Signup failed due to a network/server error.");
+      setStatus("Signup failed. Check Firebase setup and try again.");
     } finally {
       setLoading(false);
     }

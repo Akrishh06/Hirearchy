@@ -1,12 +1,42 @@
-import Link from "next/link";
+"use client";
 
-import { requireSession } from "@/lib/auth";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 import { Dashboard } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
+import { getFirebaseAuth } from "@/lib/firebase";
 
-export default async function Home() {
-  const session = await requireSession();
+export default function Home() {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      setLoading(false);
+      router.replace("/login");
+      return;
+    }
+    const unsub = onAuthStateChanged(auth, (nextUser) => {
+      if (!nextUser) {
+        router.replace("/login");
+      } else {
+        setUser(nextUser);
+      }
+      setLoading(false);
+    });
+    return () => unsub();
+  }, [router]);
+
+  if (loading) {
+    return <main className="min-h-screen bg-black p-8 text-zinc-200">Loading dashboard...</main>;
+  }
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-black px-6 py-8 font-sans text-zinc-100">
@@ -17,7 +47,7 @@ export default async function Home() {
             <p className="mt-2 text-sm text-zinc-400">
               Evaluate roles, tailor CVs, scan portals, and run your full job search pipeline.
             </p>
-            <p className="mt-1 text-xs text-zinc-500">Signed in as {session.user.email}</p>
+            <p className="mt-1 text-xs text-zinc-500">Signed in as {user.email}</p>
           </div>
           <div className="flex gap-3 text-sm">
             <Button asChild variant="outline">
@@ -32,7 +62,7 @@ export default async function Home() {
           </div>
         </header>
 
-        <Dashboard planTier={session.user.planTier} userRole={session.user.role} />
+        <Dashboard planTier="FREE" userRole="MEMBER" />
       </main>
     </div>
   );
